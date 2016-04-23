@@ -11,6 +11,8 @@ import android.widget.TextView;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 import javax.crypto.Mac;
@@ -24,19 +26,20 @@ public class GoodPxActivity extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_good_px);
         medName = (EditText)findViewById(R.id.medName);
         search = (Button)findViewById(R.id.search);
         search.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
+            public void onClick(View v){
 
             }
         });
 
         resultView = (TextView)findViewById(R.id.resultView);
     }
+
 
 
 

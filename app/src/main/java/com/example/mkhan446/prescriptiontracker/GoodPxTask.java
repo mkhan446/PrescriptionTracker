@@ -6,6 +6,8 @@ import android.util.Base64;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 
 import javax.crypto.Mac;
@@ -14,18 +16,26 @@ import javax.crypto.spec.SecretKeySpec;
 /**
  * Created by mkhan446 on 4/23/2016.
  */
-public class GoodPxTask extends AsyncTask<String, int, String>{
+public class GoodPxTask extends AsyncTask<String, Void, String>{
+
     private final String apiKey = "d049602abc";
     private final String secretKey = "WxSJvMBRd0IcVw";
     private final String url =  "https://api.goodrx.com/compare-price";
 
-    protected String doInBackground(String medName) throws UnsupportedEncodingException, SignatureException, java.security.NoSuchAlgorithmException, java.security.InvalidKeyException{
-        String query = buildQueryString(medName);
-        String signature = encodeString(signQueryString(query));
-        String signedRequest = createURL(query, signature);
-    }
+    protected String doInBackground(String... medNames){
+        try{
+            String query = buildQueryString(medNames[0]);
+            String signature = encodeString(signQueryString(query));
+            String URL = createURL(query, signature);
 
-    protected void onPostExecute(Long result) {
+
+
+            return URL;
+        }
+        catch(UnsupportedEncodingException|SignatureException|NoSuchAlgorithmException |InvalidKeyException e){
+            return null;
+        }
+
     }
 
     protected String buildQueryString(String medName){
@@ -52,6 +62,11 @@ public class GoodPxTask extends AsyncTask<String, int, String>{
     protected String createURL(String query, String signature){
         return url+"?"+query+"&sig="+signature;
     }
+
+    protected void onPostExecute(Long result) {
+    }
+
+
 
 
 }
