@@ -6,7 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.example.brand.goodrx"
-        minSdkVersion 15
+        multiDexEnabled true
+        minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
@@ -24,4 +25,5 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile project(':volley')
 }

@@ -2,6 +2,7 @@ package com.example.brand.goodrx;
 
 import android.app.*;
 import android.app.Activity;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import java.util.Calendar;
@@ -18,6 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.view.LayoutInflater;
@@ -49,10 +52,13 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
     private DatePicker datePicker;
     private Calendar calendar;
     private TextView dateView;
+    private TextView endView;
     private int year, month, day;
+    private int year2, month2, day2;
     private Spinner spinner;
     private int decay = 0;
     private int quantity = 0;
+    private int days = 0;
 
     Button mButton;
     EditText mEdit;
@@ -68,16 +74,26 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eventinput);
+        mEdit = (EditText)findViewById(R.id.drugname);
         mButton = (Button)findViewById(R.id.submit);
         mText = (EditText)findViewById(R.id.quantity);
         mButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v){
                 quantity = Integer.parseInt(mText.getText().toString().trim());
                 if (!mText.equals("") && quantity != 0){
-                    System.out.println("Working!");
-                    int days = quantity * 1/decay;
-                    System.out.println(days);
-
+                    days = quantity / (24/decay);
+                    computeEndDate();
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.putExtra("mEdit", String.valueOf(mEdit));
+                    intent.putExtra("quantity", quantity);
+                    intent.putExtra("year", year);
+                    intent.putExtra("year2", year2);
+                    intent.putExtra("month", month);
+                    intent.putExtra("month2", month2);
+                    intent.putExtra("day", day);
+                    intent.putExtra("day2", day2);
+                    startActivity(intent);
+                    System.out.println("Sending!");
                 }
                 else{
                     System.out.println(":(");
@@ -85,11 +101,12 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
             }
         });
         dateView = (TextView) findViewById(R.id.textView3);
+        endView = (TextView) findViewById(R.id.textView1);
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
         day = calendar.get(Calendar.DAY_OF_MONTH);
         month = calendar.get(Calendar.MONTH);
-        showDate(year, month + 1, day);
+        showDate(year, month + 1,day, false);
 
         Spinner dynamicSpinner = (Spinner) findViewById(R.id.spinner1);
 
@@ -155,12 +172,25 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
             // arg1 = year
             // arg2 = month
             // arg3 = day
-            showDate(arg1, arg3, arg2 + 1);
+            showDate(arg1, arg2 + 1,arg3, false);
         }
     };
 
-    private void showDate(int year, int month, int day) {
-        dateView.setText(new StringBuilder().append(month).append("/").append(day).append("/").append(year));
+    private void showDate(int year, int month, int day, boolean end) {
+        if(!end)
+            dateView.setText(new StringBuilder().append(month).append("/").append(day).append("/").append(year));
+        else
+            endView.setText(new StringBuilder().append(month).append("/").append(day).append("/").append(year));
+    }
+
+    private void computeEndDate(){
+        GregorianCalendar gregDate = new GregorianCalendar(year, month, day);
+        calendar.setTime(gregDate.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, days);
+        year2 = calendar.get(Calendar.YEAR);
+        day2 = calendar.get(Calendar.DAY_OF_MONTH);
+        month2 = calendar.get(Calendar.MONTH);
+        showDate(year2, month2 + 1, day2, true);
     }
 
     @Override

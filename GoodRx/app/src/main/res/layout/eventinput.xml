@@ -101,6 +101,15 @@
             android:text="@string/date_selected"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/date_end_set"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_below="@+id/textView3"
+            android:layout_alignStart="@+id/textView3" />
+
     </RelativeLayout>
 
     <Button

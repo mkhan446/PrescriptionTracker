@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import android.database.sqlite.*;
 import android.app.*;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
@@ -20,6 +21,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.provider.CalendarContract;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -58,6 +60,8 @@ public class MainActivity extends Activity implements OnClickListener {
     @SuppressLint({"NewApi", "NewApi", "NewApi", "NewApi"})
     private final DateFormat dateFormatter = new DateFormat();
     private static final String dateTemplate = "MMMM yyyy";
+    private TextView num_events_per_day;
+    private TextView eventData;
 
     PopupWindow popUp;
     LinearLayout layout;
@@ -101,6 +105,7 @@ public class MainActivity extends Activity implements OnClickListener {
         nextMonth.setOnClickListener(this);
 
         calendarView = (GridView) this.findViewById(R.id.calendar);
+        eventData = (TextView) this.findViewById(R.id.textView6);
 
 // Initialised
         adapter = new GridCellAdapter(getApplicationContext(),
@@ -110,6 +115,22 @@ public class MainActivity extends Activity implements OnClickListener {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null){
+            // all the data is taken from event InputEvent
+            //the date2 are the ending dates.
+            String mEdit = extras.getString("mEdit");
+            int quantity = extras.getInt("quantity");
+            int year = extras.getInt("year");
+            int year2 = extras.getInt("year2");
+            int month = extras.getInt("month");
+            int month2 = extras.getInt("month2");
+            int day = extras.getInt("day");
+            int day2 = extras.getInt("day2");
+            System.out.println("Recieved!");
+            addEvent(mEdit,quantity,day,month,year, day2,month2, year2);
+        }
 
     }
 
@@ -151,18 +172,67 @@ public class MainActivity extends Activity implements OnClickListener {
                     + month + "Year:" + year);
             setGridCellAdapterToDate(month, year);
         }
-
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            // all the data is taken from event InputEvent
+            //the date2 are the ending dates.
+            String mEdit = extras.getString("mEdit");
+            int quantity = extras.getInt("quantity");
+            int year = extras.getInt("year");
+            int year2 = extras.getInt("year2");
+            int month = extras.getInt("month");
+            int month2 = extras.getInt("month2");
+            int day = extras.getInt("day");
+            int day2 = extras.getInt("day2");
+            System.out.println("Recieved!");
+            addEvent(mEdit, quantity, day, month, year, day2, month2, year2);
+        }
     }
 
-    public void onClickAdd(View view){
+    public void onClickAdd(View view) {
         int value = 0;
         Intent myIntent = new Intent(MainActivity.this, EventInput.class);
-        myIntent.putExtra("key",value);
+        myIntent.putExtra("key", value);
         startActivity(myIntent);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            // all the data is taken from event InputEvent
+            //the date2 are the ending dates.
+            String mEdit = extras.getString("mEdit");
+            int quantity = extras.getInt("quantity");
+            int year = extras.getInt("year");
+            int year2 = extras.getInt("year2");
+            int month = extras.getInt("month");
+            int month2 = extras.getInt("month2");
+            int day = extras.getInt("day");
+            int day2 = extras.getInt("day2");
+            System.out.println("Recieved!");
+            addEvent(mEdit, quantity, day, month, year, day2, month2, year2);
+        }
     }
 
     // Adding event <code></code>
-
+    public void onClickInfo(View view) {
+        int value = 0;
+        Intent myIntent = new Intent(MainActivity.this, GoodRxActivity.class);
+        myIntent.putExtra("key", value);
+        startActivity(myIntent);
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            // all the data is taken from event InputEvent
+            //the date2 are the ending dates.
+            String mEdit = extras.getString("mEdit");
+            int quantity = extras.getInt("quantity");
+            int year = extras.getInt("year");
+            int year2 = extras.getInt("year2");
+            int month = extras.getInt("month");
+            int month2 = extras.getInt("month2");
+            int day = extras.getInt("day");
+            int day2 = extras.getInt("day2");
+            System.out.println("Recieved!");
+            addEvent(mEdit, quantity, day, month, year, day2, month2, year2);
+        }
+    }
 
     public long addingEvent(ContentResolver content, String title, String addInfo, String place,
                             int status, long startDate, boolean isRemind, long endDate) {
@@ -528,4 +598,46 @@ public class MainActivity extends Activity implements OnClickListener {
             return currentWeekDay;
         }
     }
-}
+
+    //Need to implement a databae because it would only add 1 drug at a time and would note save
+    //on application closing
+    public void addEvent(String title, int description, int day, int month, int year, int day2,
+                         int month2, int year2){
+        long startMillis =0;
+        long endMillis = 0;
+        long calID = 0;
+        try {
+            Calendar beginTime = Calendar.getInstance();
+            beginTime.set(year, month, day);
+            startMillis = beginTime.getTimeInMillis();
+            Calendar endTime = Calendar.getInstance();
+            endTime.set(year2, month2, day2);
+            endMillis = endTime.getTimeInMillis();
+
+            StringBuilder eventOutput = new StringBuilder("The following event has been created:\n\n");
+
+            ContentResolver cr = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.DTSTART, startMillis);
+            values.put(CalendarContract.Events.DTEND, endMillis);
+            values.put(CalendarContract.Events.TITLE, title);
+            values.put(CalendarContract.Events.DESCRIPTION, description);
+            values.put(CalendarContract.Events.CALENDAR_ID, calID);
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, "America/Los_Angeles");
+            Uri uri = cr.insert(CalendarContract.Events.CONTENT_URI, values);
+
+            eventOutput.append("Lipitor Schedule" +"\n");
+            eventOutput.append(new StringBuilder().append("Start Date: ").append(month).append("/").append(day).append("/").append(year)+"\n");
+            eventOutput.append(new StringBuilder().append("End Date: ").append(month2).append("/").append(day2).append("/").append(year2)+"\n");
+            eventOutput.append("Quantity: "+values.getAsString(CalendarContract.Events.DESCRIPTION)+"\n");
+
+            eventData.setText(eventOutput);
+
+            num_events_per_day = (EditText) findViewById(R.id.title);
+            //System.out.println("Event Created!");
+        }
+        catch (SecurityException e){
+
+        }
+        }
+    }
