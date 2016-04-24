@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GoodRx</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="date_label_set">Press the button to set the date</string>
+    <string name="date_button_set">Drug Start Date</string>
+    <string name="date_view_set">Drug Starts On: </string>
+    <string name="date_selected"></string>
+</resources>
