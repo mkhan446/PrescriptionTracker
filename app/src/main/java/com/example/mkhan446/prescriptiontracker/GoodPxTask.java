@@ -3,6 +3,9 @@ package com.example.mkhan446.prescriptiontracker;
 import android.os.AsyncTask;
 import android.util.Base64;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -27,6 +30,7 @@ public class GoodPxTask extends AsyncTask<String, Void, String>{
             String query = buildQueryString(medNames[0]);
             String signature = encodeString(signQueryString(query));
             String URL = createURL(query, signature);
+
 
 
 
