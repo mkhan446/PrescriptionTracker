@@ -22,7 +22,7 @@
         android:layout_below="@id/title"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:hint="DRUG NAME"
+        android:hint="LIPITOR"
         android:inputType="text" />
 
     <EditText

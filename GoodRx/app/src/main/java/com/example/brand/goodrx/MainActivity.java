@@ -110,6 +110,7 @@ public class MainActivity extends Activity implements OnClickListener {
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
     }
 
     /**
@@ -159,6 +160,9 @@ public class MainActivity extends Activity implements OnClickListener {
         myIntent.putExtra("key",value);
         startActivity(myIntent);
     }
+
+    // Adding event <code></code>
+
 
     public long addingEvent(ContentResolver content, String title, String addInfo, String place,
                             int status, long startDate, boolean isRemind, long endDate) {
