@@ -68,7 +68,22 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.eventinput);
+        mButton = (Button)findViewById(R.id.submit);
+        mText = (EditText)findViewById(R.id.quantity);
+        mButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v){
+                quantity = Integer.parseInt(mText.getText().toString().trim());
+                if (!mText.equals("") && quantity != 0){
+                    System.out.println("Working!");
+                    int days = quantity * 1/decay;
+                    System.out.println(days);
 
+                }
+                else{
+                    System.out.println(":(");
+                }
+            }
+        });
         dateView = (TextView) findViewById(R.id.textView3);
         calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -87,14 +102,28 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
 
         dynamicSpinner.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view,
-                                       int position, long id) {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 Log.v("item", (String) parent.getItemAtPosition(position));
+                switch (position) {
+                    case 0:
+                        decay = 1;
+                        break;
+                    case 1:
+                        decay = 6;
+                        break;
+                    case 2:
+                        decay = 12;
+                        break;
+                    case 3:
+                        decay = 24;
+                        break;
+                }
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
                 // TODO Auto-generated method stub
+                decay = 1;
             }
         });
         // ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -131,8 +160,7 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
     };
 
     private void showDate(int year, int month, int day) {
-        dateView.setText(new StringBuilder().append(day).append("/")
-                .append(month).append("/").append(year));
+        dateView.setText(new StringBuilder().append(month).append("/").append(day).append("/").append(year));
     }
 
     @Override
@@ -144,7 +172,7 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
+        decay = 1;
     }
 
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
@@ -206,10 +234,6 @@ public class EventInput extends Activity implements AdapterView.OnItemSelectedLi
         AppIndex.AppIndexApi.end(client, viewAction);
         client.disconnect();
     }
-    public void submission() {
-
-
-        }
     }
 
 
